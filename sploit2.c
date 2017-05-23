@@ -34,6 +34,7 @@ void main(int argc, char *argv[]) {
 
   setenv("EGG", buff, 1);
   printf("EGG Address: %p\n", getenv("EGG"));
+  system("bash");
 
   exit(0);
 }
