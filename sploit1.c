@@ -51,7 +51,7 @@ void main(int argc, char *argv[]) {
 
   buff[bsize - 1] = '\0';
 
-  exploit_file = fopen("./exploit_file.txt", "w+");
+  exploit_file = fopen(EXPLOIT_FILE, "w+");
   fwrite(buff, 1, bsize, exploit_file);
   fclose(exploit_file);
 
