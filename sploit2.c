@@ -18,6 +18,8 @@ void main(int argc, char *argv[]) {
   char *args[3];
   char *env[2];
 
+  printf("A lot of zeros will be printed, please do not be alarmed!\n");
+
   args[0] = TARGET;
   args[1] = format;
   args[2] = NULL;
