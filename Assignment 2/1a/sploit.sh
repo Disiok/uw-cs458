@@ -16,18 +16,18 @@ ATTACK_PASSWORD=""
 echo "=====[Setup]====="
 echo "Using Login Page at: $POST_PAGE"
 echo "Using Home Page at: $HOME_PAGE"
-echo "Using attack username: $ATTACK_USERNAME"
-echo "Using attack password: $ATTACK_PASSWORD"
 
 echo "=====[Login]====="
+echo "Using attack username: $ATTACK_USERNAME"
+echo "Using attack password: $ATTACK_PASSWORD"
 echo "Logging in with POST request"
 
 curl -X POST \
 -c "cookie.txt" \
--F "form=login" \
--F "submit=Login" \
--F "username=$ATTACK_USERNAME" \
--F "password=$ATTACK_PASSWORD" \
+-d "form=login" \
+-d "submit=Login" \
+-d "username=$ATTACK_USERNAME" \
+-d "password=$ATTACK_PASSWORD" \
 $POST_PAGE
 
 echo
