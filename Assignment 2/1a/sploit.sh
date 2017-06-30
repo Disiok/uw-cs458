@@ -22,7 +22,7 @@ echo "Using attack username: $ATTACK_USERNAME"
 echo "Using attack password: $ATTACK_PASSWORD"
 echo "Logging in with POST request"
 
-curl -X POST \
+curl \
 -c "cookie.txt" \
 -d "form=login" \
 -d "submit=Login" \
