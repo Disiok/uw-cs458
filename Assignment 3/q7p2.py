@@ -3,10 +3,11 @@ import base64
 from nacl import encoding, signing, public
 from IPython import embed
 
-from utils import API_TOKEN, VERIFY_KEY_FILE, process_response
+from utils import API_TOKEN, VERIFY_KEY_FILE, PRIVATE_KEY_FILE, PUBLIC_KEY_FILE, PLAINTEXT_MESSAGE, process_response, load_key, save_key
 
 GET_IDENTITY_URL = 'https://whoomp.cs.uwaterloo.ca/458a3/api/prekey/get-identity-key'
 GET_PREKEY_URL = 'https://whoomp.cs.uwaterloo.ca/458a3/api/prekey/get-signed-prekey'
+SEND_URL = 'https://whoomp.cs.uwaterloo.ca/458a3/api/prekey/send'
 
 # Get Jessie verify key
 data = {
@@ -43,7 +44,36 @@ response = requests.post(
 
 process_response(response)
 
-# Save Jessie signed prekey
+# Verify Jessie signed prekey
 encoded_signed_jessie_prekey = response.json()['public_key']
 decoded_signed_jessie_prekey = base64.b64decode(encoded_signed_jessie_prekey)
 jessie_prekey  = jessie_verify_key.verify(decoded_signed_jessie_prekey)
+
+# Create and save public key
+jessie_public_key = public.PublicKey(jessie_prekey)
+jessie_public_key_file_path = PUBLIC_KEY_FILE + '.' + 'pre' + '.' + 'jessie'
+save_key(jessie_public_key, jessie_public_key_file_path)
+
+# Load private key
+private_key, _ = load_key(public.PrivateKey, PRIVATE_KEY_FILE)
+
+# Create box
+box = public.Box(private_key, jessie_public_key)
+
+# Encrypt and encode message
+encrypted_message = box.encrypt(PLAINTEXT_MESSAGE)
+encoded_message = base64.b64encode(encrypted_message)
+
+# Send message
+data = {
+	'api_token': API_TOKEN,
+	'to': 'jessie',
+	'message': encoded_message
+}
+
+response = requests.post(
+	url=SEND_URL,
+	data=data,
+)
+
+process_response(response)
