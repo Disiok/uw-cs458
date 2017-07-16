@@ -30,7 +30,6 @@ jessie_public_key = public.PublicKey(encoded_jessie_public_key, encoder=encoding
 jessie_box = public.Box(private_key, jessie_public_key)
 
 
-
 data = {
 	'api_token': API_TOKEN,
 }
@@ -47,8 +46,18 @@ print 'The response is: {}'.format(messages)
 for message in messages:
 	encoded_message = message['message']
 	decoded_message = base64.b64decode(encoded_message)
-	embed()
-	decrypted_message = box.decrypt(decoded_message)
-	print 'Decrypted message is: {}'.format(decrypted_message)
+
+	recipient_ciphertext = decoded_message[:72]
+	government_ciphertext = decoded_message[72:144]
+	message_ciphertext = decoded_message[144:]
+
+	secret_key = jessie_box.decrypt(recipient_ciphertext)
+	print 'Secret key is: {}'.format(secret_key)
+
+	secret_box = secret.SecretBox(secret_key)
+	decrytped_message = secret_box.decrypt(message_ciphertext)
+	print 'Decrypted message is {}'.format(decrytped_message)
+
+
 
 

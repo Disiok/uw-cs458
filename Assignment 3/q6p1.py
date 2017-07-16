@@ -59,7 +59,7 @@ print 'The response is: {}'.format(messages)
 
 encoded_jessie_public_key = messages['public_key']
 with open(JESSIE_PUBLIC_KEY_FILE, 'w+') as jessie_public_key_file:
-	jessie_public_key_file.write(encoded_public_key)
+	jessie_public_key_file.write(encoded_jessie_public_key)
 	
 jessie_public_key = public.PublicKey(encoded_jessie_public_key, encoder=encoding.Base64Encoder)
 jessie_box = public.Box(private_key, jessie_public_key)
