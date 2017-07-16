@@ -3,73 +3,47 @@ import base64
 from nacl import encoding, signing, public
 from IPython import embed
 
-API_TOKEN = 'cac5fe74adf74deec069bb8f929b13a8b28e9e8765f7f173f9db1c410c8f90c9'
+from utils import API_TOKEN, VERIFY_KEY_FILE, process_response
 
-set_identity_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/prekey/set-identity-key'
-set_signed_prekey_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/prekey/set-signed-prekey'
+GET_IDENTITY_URL = 'https://whoomp.cs.uwaterloo.ca/458a3/api/prekey/get-identity-key'
+GET_PREKEY_URL = 'https://whoomp.cs.uwaterloo.ca/458a3/api/prekey/get-signed-prekey'
 
-SIGNING_KEY_FILE = 'pre_signing.key'
-VERIFY_KEY_FILE = 'pre_verify.key'
-
-PUBLIC_KEY_FILE = 'pre_public.key'
-PRIVATE_KEY_FILE = 'pre_private.key'
-
-# Generate certificate key pairs
-signing_key = signing.SigningKey.generate()
-verify_key = signing_key.verify_key
-
-# Save key pairs
-encoded_signing_key = signing_key.encode(encoder=encoding.Base64Encoder)
-with open(SIGNING_KEY_FILE, 'w+') as signing_key_file:
-	signing_key_file.write(encoded_signing_key)
-
-encoded_verify_key = verify_key.encode(encoder=encoding.Base64Encoder)
-with open(VERIFY_KEY_FILE, 'w+') as verify_key_file:
-	verify_key_file.write(encoded_verify_key)
-
-# Submit verifying key
+# Get Jessie verify key
 data = {
 	'api_token': API_TOKEN,
-	'public_key': encoded_verify_key
+	'user': 'jessie'
 }
 
 response = requests.post(
-	url=set_identity_url,
+	url=GET_IDENTITY_URL,
 	data=data,
 )
 
-print 'The response has status: {} {}'.format(response.status_code, response.reason)
-messages = response.json()
-print 'The response is: {}'.format(messages)
+process_response(response)
 
-# Generate encryption key pairs
-private_key = public.PrivateKey.generate()
-public_key = private_key.public_key
+# Save Jessie verify key
+encoded_jessie_verify_key = response.json()['public_key']
+jessie_verify_key_file_path = VERIFY_KEY_FILE + '.' + 'jessie'
+with open(jessie_verify_key_file_path, 'w+') as jessie_verify_key_file:
+	jessie_verify_key_file.write(encoded_jessie_verify_key)
 
-# Save encryption key pairs
-encoded_private_key = private_key.encode(encoder=encoding.Base64Encoder)
-with open(PRIVATE_KEY_FILE, 'w+') as private_key_file:
-	private_key_file.write(encoded_private_key)
+jessie_verify_key = signing.VerifyKey(encoded_jessie_verify_key, encoder=encoding.Base64Encoder)
 
-encoded_public_key = public_key.encode(encoder=encoding.Base64Encoder)
-with open(PUBLIC_KEY_FILE, 'w+') as public_key_file:
-	public_key_file.write(encoded_public_key)
-decoded_public_key = base64.b64decode(encoded_public_key)
 
-# Sign prekey
-signed_prekey = signing_key.sign(decoded_public_key, encoder=encoding.Base64Encoder)
-
-# Submit signed prekey
+# Get Jessie signed prekey
 data = {
 	'api_token': API_TOKEN,
-	'public_key': signed_prekey
+	'user': 'jessie'
 }
 
 response = requests.post(
-	url=set_signed_prekey_url,
+	url=GET_PREKEY_URL,
 	data=data,
 )
 
-print 'The response has status: {} {}'.format(response.status_code, response.reason)
-messages = response.json()
-print 'The response is: {}'.format(messages)
+process_response(response)
+
+# Save Jessie signed prekey
+encoded_signed_jessie_prekey = response.json()['public_key']
+decoded_signed_jessie_prekey = base64.b64decode(encoded_signed_jessie_prekey)
+jessie_prekey  = jessie_verify_key.verify(decoded_signed_jessie_prekey)

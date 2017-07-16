@@ -3,7 +3,7 @@ import base64
 from nacl import encoding, signing, public
 from IPython import embed
 
-from utils import API_TOKEN, JESSIE_PUBLIC_KEY_FILE, PLAINTEXT_MESSAGE, generate_and_save_encryption_keys, process_response
+from utils import API_TOKEN, PUBLIC_KEY_FILE, PLAINTEXT_MESSAGE, generate_and_save_encryption_keys, process_response
 
 pke_set_key_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/pke/set-key'
 pke_sent_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/pke/send'
@@ -26,7 +26,7 @@ response = requests.post(
 process_response(response)
 
 # Load Jessie public key
-with open(JESSIE_PUBLIC_KEY_FILE) as jessie_public_key_file:
+with open(PUBLIC_KEY_FILE + '.jessie') as jessie_public_key_file:
 	encoded_jessie_public_key = jessie_public_key_file.read()
 jessie_public_key = public.PublicKey(encoded_jessie_public_key, encoder=encoding.Base64Encoder)
 
