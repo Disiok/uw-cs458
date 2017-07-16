@@ -1,23 +1,26 @@
 import requests
 import base64
 
-API_TOKEN = 'cac5fe74adf74deec069bb8f929b13a8b28e9e8765f7f173f9db1c410c8f90c9'
+from utils import API_TOKEN, process_response
 
+INBOX_URL = 'https://whoomp.cs.uwaterloo.ca/458a3/api/plain/inbox'
+
+
+# Send inbox request
 data = {
 	'api_token': API_TOKEN,
 }
 
-inbox_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/plain/inbox'
-
 response = requests.post(
-	url=inbox_url,
+	url=INBOX_URL,
 	data=data,
 )
 
-print 'The response has status: {} {}'.format(response.status_code, response.reason)
-messages = response.json()
-print 'The response is: {}'.format(messages)
+# Process response
+def decode_and_print_messages(messages):
+	for message in messages:
+		decoded_message = base64.b64decode(message['message'])
+		print 'Message: {}'.format(decoded_message)
 
-for message in messages:
-	s = base64.b64decode(message['message'])
-	print 'Message: {}'.format(s)
+process_response(response, process_messages=decode_and_print_messages)
+

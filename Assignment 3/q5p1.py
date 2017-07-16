@@ -3,18 +3,9 @@ import base64
 from nacl import encoding, hash
 from IPython import embed
 
-API_TOKEN = 'cac5fe74adf74deec069bb8f929b13a8b28e9e8765f7f173f9db1c410c8f90c9'
+from utils import API_TOKEN, JESSIE_PUBLIC_KEY_FILE
 
-psk_send_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/psk/send'
-plain_inbox_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/plain/inbox'
-psp_send_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/psp/send'
-set_key_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/signed/set-key'
-signed_send_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/signed/send'
-get_key_url = 'https://whoomp.cs.uwaterloo.ca/458a3/api/pke/get-key'
-
-SIGNING_KEY_FILE = 'signing.key'
-VERIFY_KEY_FILE = 'verify.key'
-JESSIE_PUBLIC_KEY_FILE = 'jessie.public.key'
+GET_KEY_URL = 'https://whoomp.cs.uwaterloo.ca/458a3/api/pke/get-key'
 
 data = {
 	'api_token': API_TOKEN,
@@ -22,7 +13,7 @@ data = {
 }
 
 response = requests.post(
-	url=get_key_url,
+	url=GET_KEY_URL,
 	data=data,
 )
 
